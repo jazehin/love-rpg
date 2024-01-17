@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tilesets>
+    <tilesets name="Overworld" source="spritesheets/Overworld.png" tilesize="16">
+    <tilesets name="Caves" source="spritesheets/Caves.png" tilesize="16">
+</tilesets>
