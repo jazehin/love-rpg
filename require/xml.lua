@@ -100,15 +100,31 @@ function xml.loadTilesets()
                 tsSource = dir .. words[2]
                 tsSize = tonumber(words[3])
 
+                assert(love.filesystem.getInfo(tsSource), string.format("\"%s\" doesn't exist!", tsSource))
                 local img = love.graphics.newImage(tsSource)
                 local imgWidth, imgHeight = img:getDimensions()
 
                 assert(imgWidth % tsSize == 0 and imgHeight % tsSize == 0, string.format("Invalid image as spritesheet in \"%s\": %s is %dx%d and thus cannot be divided into %dx%d indices!", tsName, tsSource, imgWidth, imgHeight, tsSize, tsSize))
 
-                
+                local lines, columns = imgWidth / tsSize, imgHeight / tsSize
+
+                for line = 1, lines do
+                    ts[line] = {}
+                    for column = 1, columns do
+                        ts[line][column] = love.graphics.newQuad((line - 1) * tsSize, (column - 1) * tsSize, tsSize, tsSize, img)
+                    end
+                end
+
+                tilesets[tsName] = {}
+                tilesets[tsName].srs = tsSource
+                tilesets[tsName].img = img
+                tilesets[tsName].size = tsSize
+                tilesets[tsName].ts = ts
             end
         end
     end
+
+    return tilesets
 end
 
 function xml.loadMaps()

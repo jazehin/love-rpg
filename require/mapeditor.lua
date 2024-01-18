@@ -1,12 +1,21 @@
-local me = {}
+local me = { 
+    draw = {},
+    click = {},
+    type = {}
+}
 local firstPrint = true
 local btnTexts =       {"New tileset", "Delete tileset", "New map", "Edit map", "Delete map"}
 local btnReturnTexts = {"new_tileset", "delete_tileset", "new_map", "edit_map", "delete_map"}
 local width, height = love.graphics.getDimensions()
 
-function me.drawMenu() 
-    local x, y = love.mouse.getPosition()
+local isTextboxActive = false
+local textbox = {
+    x = 0,
+    y = 0,
+    text = ""
+}
 
+me["draw"]["menu"] = function () 
     local font = love.graphics.getFont()
     local text = love.graphics.newText(font, "Map Editor")
     local twidth, theight = text:getDimensions()
@@ -23,11 +32,39 @@ function me.drawMenu()
     firstPrint = false
 end
 
-function me.getClickedButton(x, y)
-    if y < height / 2 then
-        return "none"
-    else
-        return btnReturnTexts[math.ceil(x / (width / #btnTexts))]
+me["draw"]["new_tileset_1"] = function ()
+    local font = love.graphics.getFont()
+    local text = love.graphics.newText(font, "New tileset name: " .. textbox.text)
+    local twidth, theight = text:getDimensions()
+    love.graphics.draw(text, 10, 10)
+
+end
+
+me["click"]["menu"] = function (x, y)
+    if y > height / 2 then
+        return "me_" .. btnReturnTexts[math.ceil(x / (width / #btnTexts))] .. "_1"
+    end
+end
+
+me["click"]["new_tileset_1"] = function (x, y)
+
+end
+
+me["type"]["menu"] = function () end
+
+me["type"]["new_tileset_1"] = function (key)
+    if not isTextboxActive then return end
+    local letters = "abcdefghijklmnopqrstuvwxyz0123456789"
+    local i = 1
+    while i <= string.len(letters) and string.sub(letters, i, i) ~= key do i = i + 1 end
+    local isAlphanumeic = i <= string.len(letters)
+
+    if isAlphanumeic then
+        textbox.text = textbox.text .. key
+    elseif key == "space" then
+        textbox.text = textbox.text .. " "
+    elseif key == "backspace" then
+        textbox.text = string.sub(textbox.text, 1, #textbox.text - 1)
     end
 end
 

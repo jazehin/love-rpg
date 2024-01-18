@@ -10,8 +10,10 @@ function misc.tprint (tbl, indent)
             misc.tprint(v, indent+1)
         elseif type(v) == 'boolean' then
             print(formatting .. tostring(v))      
-        else
+        elseif type(v) ~= 'userdata' then
             print(formatting .. v)
+        else
+            print(formatting .. type(v))
         end
 	end
 end

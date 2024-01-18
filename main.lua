@@ -40,19 +40,20 @@ function love.update(dt)
 end
 
 function love.draw()
-    if state == "me_menu" then
-		me.drawMenu()
+    if string.sub(state, 1, 2) == "me" then
+		me["draw"][string.sub(state, 4)]()
 	end
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
-	if state == "me_menu" then
-		local btnPressed = me.getClickedButton(x, y)
-		if btnPressed ~= "none" then
-			state = "me_" .. btnPressed .. "_1"
-			if state == "me_new_tileset_1" then
-				xml.loadTilesets()
-			end
-		end
+	if string.sub(state, 1, 2) == "me" then
+		local tmpState = me["click"][string.sub(state, 4)](x, y, button, istouch, presses)
+		state = tmpState and tmpState or state
+	end
+end
+
+function love.keypressed(key, scancode, isrepeat)
+	if string.sub(state, 1, 2) == "me" then
+		me["type"][string.sub(state, 4)](key, scancode, isrepeat)
 	end
 end
